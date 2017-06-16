@@ -6,15 +6,15 @@ const list = document.getElementById('todo-list');
 function add() {
     console.warn(event);
     const input = document.getElementById('todo-input');
-
-    // Emit the new todo as some data to the server
-    server.emit('make', {
-        title: input.value
-    });
-
-    // Clear the input
-    input.value = '';
-    // TODO: refocus the element
+    if (input.value.length !== 0) {
+        // Emit the new todo as some data to the server
+        server.emit('make', {
+            title: input.value
+        });
+        // Clear the input
+        input.value = '';
+        // TODO: refocus the element
+    }
 }
 
 function render(todo) {

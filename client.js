@@ -62,6 +62,13 @@ function render(todo, index) {
     list.append(listItem);
 }
 
+function renderListTitle() {
+    const listTitle = document.createElement('h2');
+    const listTitleText = document.createTextNode('complete tasks');
+    listTitle.appendChild(listTitleText);
+    completeDiv.appendChild(listTitle);
+}
+
 function renderDone(todo, index) {
     const listItem = document.createElement('li');
     const listItemText = document.createTextNode(todo.title);
@@ -81,15 +88,26 @@ server.on('update', (todo) => {
 server.on('load', (todos) => {
     console.log(todos.ing);
     console.log(todos.done);
+    //store the data to local storage
+    localStorage["db"] = JSON.stringify(todos.ing);
+    localStorage["done"] = JSON.stringify(todos.done);
     list.innerHTML = '';
     completeList.innerHTML = '';
     completeDiv.innerHTML = '';
     if (todos.done.length !== 0) {
-        const listTitle = document.createElement('h2');
-        const listTitleText = document.createTextNode('complete tasks');
-        listTitle.appendChild(listTitleText);
-        completeDiv.appendChild(listTitle);
+        renderListTitle();
     }
     todos.ing.forEach((todo, index) => render(todo, index));
     todos.done.forEach((todo, index) => renderDone(todo, index));
 });
+
+//load cached todos when client lose connection
+(function renderCachedTodoList() {
+    const LOCAL_DB = JSON.parse(localStorage["db"])
+    const LOCAL_COMPLETE_DB = JSON.parse(localStorage["done"]);
+    if (LOCAL_COMPLETE_DB.length !== 0) {
+        renderListTitle();
+    }
+    LOCAL_DB.forEach((todo, index) => render(todo, index));
+    LOCAL_COMPLETE_DB.forEach((todo, index) => renderDone(todo, index));
+})();

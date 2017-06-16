@@ -8,12 +8,12 @@ const DB = firstTodos.map((t) => {
     // Form new Todo objects
     return new Todo(title = t.title);
 });
-const COMPLETEDB = [];
+const COMPLETE_DB = [];
 
 server.on('connection', (client) => {
     // Sends a message to the client to reload all todos
     const reloadTodos = () => {
-        server.emit('load', { ing: DB, done: COMPLETEDB });
+        server.emit('load', { ing: DB, done: COMPLETE_DB });
     }
 
     // Accepts when a client makes a new todo
@@ -44,14 +44,14 @@ server.on('connection', (client) => {
 
     // Accepts when a client complete a todo
     client.on('complete', (t) => {
-        COMPLETEDB.push(DB[t.id]);
+        COMPLETE_DB.push(DB[t.id]);
         DB.splice(t.id, 1);
         reloadTodos();
     });
 
     // Accepts when a client complete all todo tasks
     client.on('completeAll', () => {
-        COMPLETEDB.push(...DB);
+        COMPLETE_DB.push(...DB);
         DB.splice(0);
         reloadTodos();
     });

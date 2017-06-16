@@ -44,9 +44,15 @@ server.on('connection', (client) => {
 
     // Accepts when a client complete a todo
     client.on('complete', (t) => {
-        // remove deleted todo from our database
         COMPLETEDB.push(DB[t.id]);
         DB.splice(t.id, 1);
+        reloadTodos();
+    });
+
+    // Accepts when a client complete all todo tasks
+    client.on('completeAll', () => {
+        COMPLETEDB.push(...DB);
+        DB.splice(0);
         reloadTodos();
     });
 

@@ -1,5 +1,6 @@
 const server = io('http://localhost:3003/');
 const list = document.getElementById('todo-list');
+const completeDiv = document.getElementById('complete-todos');
 const completeList = document.getElementById('complete-todo-list');
 
 // NOTE: These are all our globally scoped functions for interacting with the server
@@ -37,6 +38,11 @@ function completeTodo(id) {
     });
 }
 
+function completeAll() {
+    console.warn(event);
+    server.emit('completeAll');
+}
+
 function render(todo, index) {
     const listItem = document.createElement('li');
     const listItemText = document.createTextNode(todo.title);
@@ -59,10 +65,9 @@ function render(todo, index) {
 function renderDone(todo, index) {
     const listItem = document.createElement('li');
     const listItemText = document.createTextNode(todo.title);
-    listItem.setAttribute('id', index);
-
     listItem.appendChild(listItemText);
     completeList.append(listItem);
+    completeDiv.appendChild(completeList);
 }
 
 // This event is for (re)loading the new added todos from the server
@@ -78,6 +83,13 @@ server.on('load', (todos) => {
     console.log(todos.done);
     list.innerHTML = '';
     completeList.innerHTML = '';
+    completeDiv.innerHTML = '';
+    if (todos.done.length !== 0) {
+        const listTitle = document.createElement('h2');
+        const listTitleText = document.createTextNode('complete tasks');
+        listTitle.appendChild(listTitleText);
+        completeDiv.appendChild(listTitle);
+    }
     todos.ing.forEach((todo, index) => render(todo, index));
     todos.done.forEach((todo, index) => renderDone(todo, index));
 });

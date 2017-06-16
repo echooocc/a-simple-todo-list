@@ -17,17 +17,31 @@ function add() {
     }
 }
 
-function render(todo) {
-    console.log(todo);
+function deleteTodo(id) {
+    console.warn(event);
+    server.emit('remove', {
+        id: id
+    });
+}
+
+function render(todo, index) {
     const listItem = document.createElement('li');
     const listItemText = document.createTextNode(todo.title);
+    listItem.setAttribute('id', index);
+
+    const removeButton = document.createElement('button');
+    removeButton.appendChild(document.createTextNode("x"));
+    removeButton.setAttribute('onClick', 'deleteTodo("' + index + '")');
+
     listItem.appendChild(listItemText);
+    listItem.appendChild(removeButton);
     list.append(listItem);
 }
 
 // This event is for (re)loading the new added todos from the server
 server.on('update', (todo) => {
-    render(todo);
+    console.log(todo);
+    render(todo.t, todo.i);
 });
 
 // NOTE: These are listeners for events from the server
@@ -35,5 +49,5 @@ server.on('update', (todo) => {
 server.on('load', (todos) => {
     console.log(todos);
     list.innerHTML = '';
-    todos.forEach((todo) => render(todo));
+    todos.forEach((todo, index) => render(todo, index));
 });

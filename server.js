@@ -24,7 +24,15 @@ server.on('connection', (client) => {
         // Push this newly created todo to our database
         DB.push(newTodo);
         // Send the latest todos to the client
-        server.emit('update', newTodo);
+        index = DB.length - 1;
+        server.emit('update', { t: newTodo, i: index });
+    });
+
+    // Accepts when a client deletes a todo
+    client.on('remove', (t) => {
+        // remove deleted todo from our database
+        DB.splice(t.id, 1);
+        reloadTodos();
     });
 
     // Send the DB downstream on connect

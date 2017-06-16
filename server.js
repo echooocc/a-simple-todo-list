@@ -8,12 +8,12 @@ const DB = firstTodos.map((t) => {
     // Form new Todo objects
     return new Todo(title = t.title);
 });
+const COMPLETEDB = [];
 
 server.on('connection', (client) => {
     // Sends a message to the client to reload all todos
     const reloadTodos = () => {
-        console.log(DB);
-        server.emit('load', DB);
+        server.emit('load', { ing: DB, done: COMPLETEDB });
     }
 
     // Accepts when a client makes a new todo
@@ -42,6 +42,13 @@ server.on('connection', (client) => {
         reloadTodos();
     });
 
+    // Accepts when a client complete a todo
+    client.on('complete', (t) => {
+        // remove deleted todo from our database
+        COMPLETEDB.push(DB[t.id]);
+        DB.splice(t.id, 1);
+        reloadTodos();
+    });
 
     // Send the DB downstream on connect
     reloadTodos();

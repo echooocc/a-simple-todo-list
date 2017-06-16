@@ -25,6 +25,11 @@ function render(todo) {
     list.append(listItem);
 }
 
+// This event is for (re)loading the new added todos from the server
+server.on('update', (todo) => {
+    render(todo);
+});
+
 // NOTE: These are listeners for events from the server
 // This event is for (re)loading the entire list of todos from the server
 server.on('load', (todos) => {

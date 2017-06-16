@@ -23,10 +23,8 @@ server.on('connection', (client) => {
 
         // Push this newly created todo to our database
         DB.push(newTodo);
-
         // Send the latest todos to the client
-        // FIXME: This sends all todos every time, could this be more efficient?
-        reloadTodos();
+        server.emit('update', newTodo);
     });
 
     // Send the DB downstream on connect

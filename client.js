@@ -24,6 +24,11 @@ function deleteTodo(id) {
     });
 }
 
+function deleteAll() {
+    console.warn(event);
+    server.emit('removeAll');
+}
+
 function render(todo, index) {
     const listItem = document.createElement('li');
     const listItemText = document.createTextNode(todo.title);

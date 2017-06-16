@@ -35,6 +35,14 @@ server.on('connection', (client) => {
         reloadTodos();
     });
 
+    // Accepts when a client remove all todo tasks
+    client.on('removeAll', () => {
+        // remove all todos from our database
+        DB.splice(0);
+        reloadTodos();
+    });
+
+
     // Send the DB downstream on connect
     reloadTodos();
 });

@@ -10,18 +10,19 @@ server.on('connection', (client) => {
     // connections from the last time the server was run...
     const DB = firstTodos.map((t) => {
         // Form new Todo objects
-        return new Todo(title=t.title);
+        return new Todo(title = t.title);
     });
 
     // Sends a message to the client to reload all todos
     const reloadTodos = () => {
+        console.log(DB);
         server.emit('load', DB);
     }
 
     // Accepts when a client makes a new todo
     client.on('make', (t) => {
         // Make a new todo
-        const newTodo = new Todo(title=t.title);
+        const newTodo = new Todo(title = t.title);
 
         // Push this newly created todo to our database
         DB.push(newTodo);

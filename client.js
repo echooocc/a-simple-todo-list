@@ -9,7 +9,7 @@ function add() {
 
     // Emit the new todo as some data to the server
     server.emit('make', {
-        titlé : input.value
+        title: input.value
     });
 
     // Clear the input
@@ -28,5 +28,7 @@ function render(todo) {
 // NOTE: These are listeners for events from the server
 // This event is for (re)loading the entire list of todos from the server
 server.on('load', (todos) => {
+    console.log(todos);
+    list.innerHTML = '';
     todos.forEach((todo) => render(todo));
 });

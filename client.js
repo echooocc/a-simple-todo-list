@@ -49,22 +49,27 @@ function render(todo, index) {
     listItem.setAttribute('id', index);
 
     const completeButton = document.createElement('button');
-    completeButton.appendChild(document.createTextNode("v"));
+    completeButton.appendChild(document.createTextNode("\u2714"));
     completeButton.setAttribute('onClick', 'completeTodo("' + index + '")');
+    completeButton.setAttribute('title', 'complete');
+    completeButton.setAttribute('class', 'btn-complete');
 
     const removeButton = document.createElement('button');
-    removeButton.appendChild(document.createTextNode("x"));
+    removeButton.appendChild(document.createTextNode("delete"));
     removeButton.setAttribute('onClick', 'deleteTodo("' + index + '")');
+    removeButton.setAttribute('title', 'delete');
+    removeButton.setAttribute('class', 'btn-delete');
 
+    listItem.appendChild(completeButton);
     listItem.appendChild(listItemText);
     listItem.appendChild(removeButton);
-    listItem.appendChild(completeButton);
     list.append(listItem);
 }
 
 function renderListTitle() {
-    const listTitle = document.createElement('h2');
-    const listTitleText = document.createTextNode('complete tasks');
+    const listTitle = document.createElement('h6');
+    const listTitleText = document.createTextNode('Complete Tasks');
+    listTitle.setAttribute('class', 'list-header');
     listTitle.appendChild(listTitleText);
     completeDiv.appendChild(listTitle);
 }

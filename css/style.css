@@ -1,0 +1,43 @@
+.btn-complete,
+.btn-delete {
+    line-height: 1;
+    padding: 0;
+}
+
+.btn-complete {
+    width: 26px;
+    height: 26px;
+    border-radius: 100%;
+    margin-right: 7px;
+}
+
+.btn-complete:hover {
+    color: #FFF;
+    background-color: #33C3F0;
+    border-color: #33C3F0;
+}
+
+.btn-delete {
+    border: 0;
+    text-decoration: line-through;
+    margin-left: 30px;
+}
+
+#todo-list li {
+    list-style: none;
+    margin-bottom: 0;
+}
+
+#complete-todo-list {
+    margin-left: 10px;
+}
+
+#complete-todos {
+    color: grey;
+}
+
+.list-header {
+    text-transform: uppercase;
+    letter-spacing: .2rem;
+    font-weight: 600;
+}

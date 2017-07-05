@@ -1,4 +1,14 @@
-const server = require('socket.io')();
+const express = require('express');
+const socketIO = require('socket.io');
+const path = require('path');
+
+const PORT = process.env.PORT || 3000;
+
+const server = express()
+    .use(express.static(path.join(__dirname, 'public')))
+    .listen(PORT, () => console.log(`Listening on ${ PORT }`));
+const io = socketIO(server);
+
 const firstTodos = require('./data');
 const Todo = require('./todo');
 
@@ -10,10 +20,10 @@ const DB = firstTodos.map((t) => {
 });
 const COMPLETE_DB = [];
 
-server.on('connection', (client) => {
+io.on('connection', (client) => {
     // Sends a message to the client to reload all todos
     const reloadTodos = () => {
-        server.emit('load', { ing: DB, done: COMPLETE_DB });
+        io.emit('load', { ing: DB, done: COMPLETE_DB });
     }
 
     // Accepts when a client makes a new todo
@@ -25,7 +35,7 @@ server.on('connection', (client) => {
         DB.push(newTodo);
         // Send the latest todos to the client
         index = DB.length - 1;
-        server.emit('update', { t: newTodo, i: index });
+        io.emit('update', { t: newTodo, i: index });
     });
 
     // Accepts when a client deletes a todo
@@ -61,4 +71,3 @@ server.on('connection', (client) => {
 });
 
 console.log('Waiting for clients to connect');
-server.listen(3003);

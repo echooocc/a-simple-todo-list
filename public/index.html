@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>TODO</title>
+    <meta name="description" content="a simple todo list">
+    <meta name="author" content="echooocc">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="css/skeleton.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div style="margin-top: 10%">
+            <h2>📝</h2>
+        </div>
+        <div class="row" style="margin-top: 40px">
+            <input id="todo-input" type="text" placeholder="Feed the cat" autofocus>
+            <button type="button" class="button-primary" onclick="add()">add</button>
+            <button type="button" onclick="deleteAll()">Delete All</button>
+            <button type="button" onclick="completeAll()">Comeplete All</button>
+            <div style="margin-top: 5%">
+                <h6 class="list-header">ongoing tasks</h6>
+                <ul id="todo-list"></ul>
+            </div>
+            <div id="complete-todos" style="margin-top: 5%">
+                <ul id="complete-todo-list"></ul>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    const server = io();
+    const list = document.getElementById('todo-list');
+    const completeDiv = document.getElementById('complete-todos');
+    const completeList = document.getElementById('complete-todo-list');
+
+    // NOTE: These are all our globally scoped functions for interacting with the server
+    // This function adds a new todo from the input
+    function add() {
+        console.warn(event);
+        const input = document.getElementById('todo-input');
+        if (input.value.length !== 0) {
+            // Emit the new todo as some data to the server
+            server.emit('make', {
+                title: input.value
+            });
+            // Clear the input
+            input.value = '';
+            // TODO: refocus the element
+        }
+    }
+
+    function deleteTodo(id) {
+        console.warn(event);
+        server.emit('remove', {
+            id: id
+        });
+    }
+
+    function deleteAll() {
+        console.warn(event);
+        server.emit('removeAll');
+    }
+
+    function completeTodo(id) {
+        console.warn(event);
+        server.emit('complete', {
+            id: id
+        });
+    }
+
+    function completeAll() {
+        console.warn(event);
+        server.emit('completeAll');
+    }
+
+    function render(todo, index) {
+        const listItem = document.createElement('li');
+        const listItemText = document.createTextNode(todo.title);
+        listItem.setAttribute('id', index);
+
+        const completeButton = document.createElement('button');
+        completeButton.appendChild(document.createTextNode("\u2714"));
+        completeButton.setAttribute('onClick', 'completeTodo("' + index + '")');
+        completeButton.setAttribute('title', 'complete');
+        completeButton.setAttribute('class', 'btn-complete');
+
+        const removeButton = document.createElement('button');
+        removeButton.appendChild(document.createTextNode("delete"));
+        removeButton.setAttribute('onClick', 'deleteTodo("' + index + '")');
+        removeButton.setAttribute('title', 'delete');
+        removeButton.setAttribute('class', 'btn-delete');
+
+        listItem.appendChild(completeButton);
+        listItem.appendChild(listItemText);
+        listItem.appendChild(removeButton);
+        list.append(listItem);
+    }
+
+    function renderListTitle() {
+        const listTitle = document.createElement('h6');
+        const listTitleText = document.createTextNode('Complete Tasks');
+        listTitle.setAttribute('class', 'list-header');
+        listTitle.appendChild(listTitleText);
+        completeDiv.appendChild(listTitle);
+    }
+
+    function renderDone(todo, index) {
+        const listItem = document.createElement('li');
+        const listItemText = document.createTextNode(todo.title);
+        listItem.appendChild(listItemText);
+        completeList.append(listItem);
+        completeDiv.appendChild(completeList);
+    }
+
+    // This event is for (re)loading the new added todos from the server
+    server.on('update', (todo) => {
+        console.log(todo);
+        render(todo.t, todo.i);
+    });
+
+    // NOTE: These are listeners for events from the server
+    // This event is for (re)loading the entire list of todos from the server
+    server.on('load', (todos) => {
+        console.log(todos.ing);
+        console.log(todos.done);
+        //store the data to local storage
+        localStorage["db"] = JSON.stringify(todos.ing);
+        localStorage["done"] = JSON.stringify(todos.done);
+        list.innerHTML = '';
+        completeList.innerHTML = '';
+        completeDiv.innerHTML = '';
+        if (todos.done.length !== 0) {
+            renderListTitle();
+        }
+        todos.ing.forEach((todo, index) => render(todo, index));
+        todos.done.forEach((todo, index) => renderDone(todo, index));
+    });
+
+    //load cached todos when client lose connection
+    (function renderCachedTodoList() {
+        const LOCAL_DB = JSON.parse(localStorage["db"])
+        const LOCAL_COMPLETE_DB = JSON.parse(localStorage["done"]);
+        if (LOCAL_COMPLETE_DB.length !== 0) {
+            renderListTitle();
+        }
+        LOCAL_DB.forEach((todo, index) => render(todo, index));
+        LOCAL_COMPLETE_DB.forEach((todo, index) => renderDone(todo, index));
+    })();
+</script>
+
+</html>

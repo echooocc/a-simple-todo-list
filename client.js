@@ -1,4 +1,4 @@
-const server = io('http://localhost:3003/');
+const server = io();
 const list = document.getElementById('todo-list');
 const completeDiv = document.getElementById('complete-todos');
 const completeList = document.getElementById('complete-todo-list');

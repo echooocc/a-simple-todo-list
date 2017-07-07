@@ -37,3 +37,28 @@ Now open `index.html` in your browser. Things won't work at first, but once the 
 
 ## Done?
 Great job! When you're all finished, send me an email with a link to the repo and I will check it out! 🙌
+
+
+# Notes from Echo
+1. Description of the problem and solution.
+
+Above is all the tasks I need to tackled with solution I provides, compared the files from initial commit to see new added code.
+
+2. How to build/deploy/use your solution. Link to the hosted application if applicable.
+```sh
+npm install
+npm start
+```
+[demo](https://todo-list-2017.herokuapp.com)
+
+3. Reasoning behind your technical choices, including architectural.
+
+socket.io is great for real time application, and files are seperated into server.js and client.js
+
+4. Trade-offs you might have made, anything you left out, or what you might do differently if you were to spend additional time on the project.
+
+If started new applcation I would prefer to enforce the "use strict" mode, since it was built on existing code and code base is relatively small, didn't use it this time
+
+5. Link to other projects or code you’re particularly proud of.
+
+[link](https://github.com/echooocc)

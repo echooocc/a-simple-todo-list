@@ -62,3 +62,5 @@ If started new applcation I would prefer to enforce the "use strict" mode, since
 5. Link to other projects or code you’re particularly proud of.
 
 [link](https://github.com/echooocc)
+
+ Changes made by automated script
